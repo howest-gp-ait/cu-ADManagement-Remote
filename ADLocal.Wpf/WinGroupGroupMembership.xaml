@@ -1,0 +1,50 @@
+﻿<Window x:Class="ADLocal.Wpf.WinGroupGroupMembership"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ADLocal.Wpf"
+        mc:Ignorable="d"
+         Title="Group memberships" Height="699" Width="685.123" WindowStartupLocation="CenterScreen" Loaded="Window_Loaded">
+    <Grid>
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" Height="36" Margin="10,10,0,0" VerticalAlignment="Top" Width="97" Background="#FF6CD415" Click="BtnSave_Click"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Height="36" Margin="112,10,0,0" VerticalAlignment="Top" Width="97" Background="#FFD45215" Click="BtnCancel_Click"/>
+        <Label Content="Groupname : " HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtGroupName" IsReadOnly="True" HorizontalAlignment="Left" Height="26" Margin="185,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440"/>
+
+        <GroupBox Header="Users in this group" HorizontalAlignment="Left" Height="258" Margin="10,103,0,0" VerticalAlignment="Top" Width="657">
+            <Grid>
+                <GroupBox Header="Members" HorizontalAlignment="Left" Height="216" Margin="10,10,0,0" VerticalAlignment="Top" Width="280">
+                    <Grid>
+                        <ListBox x:Name="lstUsersIn" HorizontalAlignment="Left" Height="188" Margin="0,0,0,0" VerticalAlignment="Top" Width="258"/>
+
+                    </Grid>
+                </GroupBox>
+                <Button x:Name="btnAddUserToGroup" Content="&lt;" HorizontalAlignment="Left" Height="30" Margin="310,80,0,0" VerticalAlignment="Top" Width="26" Click="BtnAddUserToGroup_Click"/>
+                <Button x:Name="btnRemoveUserFromGroup" Content="&gt;" HorizontalAlignment="Left" Height="30" Margin="310,136,0,0" VerticalAlignment="Top" Width="26" Click="BtnRemoveUserFromGroup_Click"/>
+                <GroupBox Header="Available users" HorizontalAlignment="Left" Height="216" Margin="357,10,0,0" VerticalAlignment="Top" Width="280">
+                    <Grid>
+                        <ListBox x:Name="lstUsersOut" HorizontalAlignment="Left" Height="184" Margin="0,0,0,0" VerticalAlignment="Top" Width="258"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Groups in this group" HorizontalAlignment="Left" Height="258" Margin="10,372,0,0" VerticalAlignment="Top" Width="657">
+            <Grid>
+                <GroupBox Header="Members" HorizontalAlignment="Left" Height="216" Margin="10,10,0,0" VerticalAlignment="Top" Width="280">
+                    <Grid>
+                        <ListBox x:Name="lstGroupsIn" HorizontalAlignment="Left" Height="188" Margin="0,0,0,0" VerticalAlignment="Top" Width="258"/>
+
+                    </Grid>
+                </GroupBox>
+                <Button x:Name="btnAddGroupToGroup" Content="&lt;" HorizontalAlignment="Left" Height="30" Margin="310,80,0,0" VerticalAlignment="Top" Width="26" Click="BtnAddGroupToGroup_Click"/>
+                <Button x:Name="btnRemoveGroupFromGroup" Content="&gt;" HorizontalAlignment="Left" Height="30" Margin="310,136,0,0" VerticalAlignment="Top" Width="26" Click="BtnRemoveGroupFromGroup_Click"/>
+                <GroupBox Header="Available groups" HorizontalAlignment="Left" Height="216" Margin="357,10,0,0" VerticalAlignment="Top" Width="280">
+                    <Grid>
+                        <ListBox x:Name="lstGroupsOut" HorizontalAlignment="Left" Height="184" Margin="0,0,0,0" VerticalAlignment="Top" Width="258"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

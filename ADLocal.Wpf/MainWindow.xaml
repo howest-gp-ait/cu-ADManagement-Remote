@@ -1,0 +1,65 @@
+﻿<Window x:Class="ADLocal.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ADLocal.Wpf"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="884" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
+    <Grid>
+        <GroupBox x:Name="grpOUOverview" HorizontalAlignment="Left" Height="806" Header="Beschikbare OU's
+                  " Margin="17,17,0,0" VerticalAlignment="Top" Width="349">
+            <Grid>
+                <Button x:Name="btnNewOU" Content="Nieuw" HorizontalAlignment="Left" Height="22" Margin="8,8,0,0" VerticalAlignment="Top" Width="70" Click="BtnNewOU_Click"/>
+                <Button x:Name="btnNewRootOU" Content="Nieuw op root" HorizontalAlignment="Left" Height="22" Margin="81,8,0,0" VerticalAlignment="Top" Width="101" Click="BtnNewRootOU_Click"/>
+                <Button x:Name="btnEditOU" Content="Wijzig" HorizontalAlignment="Left" Height="22" Margin="184,8,0,0" VerticalAlignment="Top" Width="70" Click="BtnEditOU_Click"/>
+                <Button x:Name="btnDeleteOU" Content="Verwijder" HorizontalAlignment="Left" Height="22" Margin="258,8,0,0" VerticalAlignment="Top" Width="70" Click="BtnDeleteOU_Click"/>
+
+                <TreeView x:Name="TVOU" HorizontalAlignment="Center" Height="722" Margin="0,43,0,0" VerticalAlignment="Top" Width="322" SelectedItemChanged="TVOU_SelectedItemChanged">
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded" Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="grpOUDetails" HorizontalAlignment="Left" Height="184" Header="OU bewerken" Margin="389,18,0,0" VerticalAlignment="Top" Width="677">
+            <Grid>
+                <Button x:Name="btnSaveOU" Content="Bewaren" HorizontalAlignment="Left" Height="22" Margin="8,8,0,0" VerticalAlignment="Top" Width="82" Click="BtnSaveOU_Click"/>
+                <Button x:Name="btnCancelOU" Content="Annuleren" HorizontalAlignment="Left" Height="22" Margin="95,8,0,0" VerticalAlignment="Top" Width="82" Click="BtnCancelOU_Click"/>
+                <Label Content="Parentnode : " HorizontalAlignment="Left" Height="28" Margin="10,41,0,0" VerticalAlignment="Top" Width="83"/>
+                <Label x:Name="lblOUParentNode" Background="OldLace" Content="" HorizontalAlignment="Left" Height="28" Margin="88,41,0,0" VerticalAlignment="Top" Width="554"/>
+                <Label Content="ADPath OU " HorizontalAlignment="Left" Height="28" Margin="10,82,0,0" VerticalAlignment="Top" Width="83"/>
+                <Label x:Name="lblOUADPath" Background="OldLace" Content="" HorizontalAlignment="Left" Height="28" Margin="87,78,0,0" VerticalAlignment="Top" Width="554"/>
+                <Label Content="Naam OU : " HorizontalAlignment="Left" Height="28" Margin="13,122,0,0" VerticalAlignment="Top" Width="83"/>
+                <TextBox x:Name="txtOUName" HorizontalAlignment="Left" Height="25" Margin="90,120,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="550"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="grpUsers" HorizontalAlignment="Left" Height="605" Header="Users" Margin="389,214,0,0" VerticalAlignment="Top" Width="332">
+            <Grid>
+                <ListBox x:Name="lstUsers" HorizontalAlignment="Center" Height="385" Margin="0,12,0,0" VerticalAlignment="Top" Width="296" SelectionChanged="LstUsers_SelectionChanged" />
+                <Button x:Name="btnDetailsUser" Content="Details" HorizontalAlignment="Left" Height="22" Margin="13,545,0,0" VerticalAlignment="Top" Width="50" Click="BtnDetailsUser_Click"/>
+                <Button x:Name="btnNewUser" Content="Nieuw" HorizontalAlignment="Left" Height="22" Margin="63,545,0,0" VerticalAlignment="Top" Width="50" Click="BtnNewUser_Click"/>
+                <Button x:Name="btnEditUser" Content="Wijzig" HorizontalAlignment="Left" Height="22" Margin="113,545,0,0" VerticalAlignment="Top" Width="50" Click="BtnEditUser_Click"/>
+                <Button x:Name="btnGroupUser" Content="Groupmembership" HorizontalAlignment="Left" Height="22" Margin="163,545,0,0" VerticalAlignment="Top" Width="104" Click="BtnGroupUser_Click"/>
+                <Button x:Name="btnDeleteUser" Content="Wis" HorizontalAlignment="Left" Height="22" Margin="267,545,0,0" VerticalAlignment="Top" Width="50" Click="BtnDeleteUser_Click"/>
+                <Label x:Name="lblUserInfo" Background="OldLace" Content="" HorizontalAlignment="Left" Height="117" Margin="15,413,0,0" VerticalAlignment="Top" Width="295"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="grpGroups" HorizontalAlignment="Left" Height="604" Header="Groups" Margin="740,214,0,0" VerticalAlignment="Top" Width="332">
+            <Grid Height="579">
+                <ListBox x:Name="lstGroups" HorizontalAlignment="Center" Height="381" Margin="0,12,0,0" VerticalAlignment="Top" Width="296" SelectionChanged="LstGroups_SelectionChanged" />
+                <Button x:Name="btnNewGroup" Content="Nieuw" HorizontalAlignment="Left" Height="22" Margin="16,544,0,0" VerticalAlignment="Top" Width="50" Click="BtnNewGroup_Click"/>
+                <Button x:Name="btnEditGroup" Content="Wijzig" HorizontalAlignment="Left" Height="22" Margin="66,544,0,0" VerticalAlignment="Top" Width="50" Click="BtnEditGroup_Click"/>
+                <Button x:Name="btnDeleteGroup" Content="Wis" HorizontalAlignment="Left" Height="22" Margin="227,544,0,0" VerticalAlignment="Top" Width="40" Click="BtnDeleteGroup_Click"/>
+                <Label x:Name="lblGroupInfo" Background="OldLace" Content="" HorizontalAlignment="Left" Height="117" Margin="15,413,0,0" VerticalAlignment="Top" Width="295"/>
+                <Button x:Name="btnGroupGroup" Content="Groupmemberships" HorizontalAlignment="Left" Height="22" Margin="116,544,0,0" VerticalAlignment="Top" Width="111" Click="BtnGroupGroup_Click"/>
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
