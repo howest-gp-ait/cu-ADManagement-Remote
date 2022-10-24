@@ -9,6 +9,5 @@
         public static string contextUsername = "xxx.xxxxx";
         public static string contextPw = "xxxxxx";
         public static string contextEmail = "@ait.gradprog";
-
     }
 }
