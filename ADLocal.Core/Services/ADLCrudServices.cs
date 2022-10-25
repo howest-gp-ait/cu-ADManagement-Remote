@@ -1,5 +1,6 @@
 ﻿using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Text;
 using System.Text.RegularExpressions;
 using ADLocal.Core.Entities;
 
@@ -26,7 +27,8 @@ namespace ADLocal.Core.Services
         {
             try
             {
-                DirectoryEntry newOU = parentOU.DirectoryEntry.Children.Add("OU=" + ouName, "OrganizationalUnit");
+                DirectoryEntry directoryEntry = new DirectoryEntry(parentOU.Path, ADLContext.contextUsername, ADLContext.contextPw);
+                DirectoryEntry newOU = directoryEntry.Children.Add("OU=" + ouName, "OrganizationalUnit");
                 newOU.CommitChanges();
                 return new ADLOU(newOU.Path);
             }
@@ -194,12 +196,28 @@ namespace ADLocal.Core.Services
             }
 
         }
+
+        //// onderstaande methode uit dienst genomen wegens VEEL TE TRAAG
+        //public bool unused_AddUserToGroup(ADLGroup adlGroup, ADLUser adlUser)
+        //{
+        //    try
+        //    {
+        //        adlGroup.GroupPrincipal.Members.Add(adlUser.UserPrincipal);
+        //        adlGroup.GroupPrincipal.Save();
+        //        return true;
+        //    }
+        //    catch (Exception fout)
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool AddUserToGroup(ADLGroup adlGroup, ADLUser adlUser)
         {
             try
             {
-                adlGroup.GroupPrincipal.Members.Add(adlUser.UserPrincipal);
-                adlGroup.GroupPrincipal.Save();
+                string userSid = string.Format($"<SID={ToSidString(adlUser.DirectoryEntry)}>");
+                adlGroup.DirectoryEntry.Properties["member"].Add(userSid);
+                adlGroup.DirectoryEntry.CommitChanges();
                 return true;
             }
             catch (Exception fout)
@@ -207,12 +225,28 @@ namespace ADLocal.Core.Services
                 return false;
             }
         }
+
+        //// onderstaande methode uit dienst genomen wegens VEEL TE TRAAG
+        //public bool unused_RemoveUserFromGroup(ADLGroup adlGroup, ADLUser adlUser)
+        //{
+        //    try
+        //    {
+        //        adlGroup.GroupPrincipal.Members.Remove(adlUser.UserPrincipal);
+        //        adlGroup.GroupPrincipal.Save();
+        //        return true;
+        //    }
+        //    catch (Exception fout)
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool RemoveUserFromGroup(ADLGroup adlGroup, ADLUser adlUser)
         {
             try
             {
-                adlGroup.GroupPrincipal.Members.Remove(adlUser.UserPrincipal);
-                adlGroup.GroupPrincipal.Save();
+                string userSid = string.Format($"<SID={ToSidString(adlUser.DirectoryEntry)}>");
+                adlGroup.DirectoryEntry.Properties["member"].Remove(userSid);
+                adlGroup.DirectoryEntry.CommitChanges();
                 return true;
             }
             catch (Exception fout)
@@ -298,14 +332,30 @@ namespace ADLocal.Core.Services
             }
             return retourGroup;
         }
+        
+        //// onderstaande methode uit dienst genomen wegens VEEL TE TRAAG
+        //public bool unused_AddGroupToGroup(ADLGroup childGroup, ADLGroup parentGroup)
+        //{
+        //    // deze methode voegt de eerste groep (childGroupPrincipal) toe
+        //    // als lid van de tweede groep (parentGroupPrincipal)
+        //    try
+        //    {
+        //        parentGroup.GroupPrincipal.Members.Add(childGroup.GroupPrincipal);
+        //        parentGroup.GroupPrincipal.Save();
+        //        return true;
+        //    }
+        //    catch (Exception fout)
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool AddGroupToGroup(ADLGroup childGroup, ADLGroup parentGroup)
         {
-            // deze methode voegt de eerste groep (childGroupPrincipal) toe
-            // als lid van de tweede groep (parentGroupPrincipal)
             try
             {
-                parentGroup.GroupPrincipal.Members.Add(childGroup.GroupPrincipal);
-                parentGroup.GroupPrincipal.Save();
+                string userSid = string.Format($"<SID={ToSidString(childGroup.DirectoryEntry)}>");
+                parentGroup.DirectoryEntry.Properties["member"].Add(userSid);
+                parentGroup.DirectoryEntry.CommitChanges();
                 return true;
             }
             catch (Exception fout)
@@ -313,14 +363,28 @@ namespace ADLocal.Core.Services
                 return false;
             }
         }
+        
+        //// onderstaande methode uit dienst genomen wegens VEEL TE TRAAG
+        //public bool unused_RemoveGroupFromGroup(ADLGroup childGroup, ADLGroup parentGroup)
+        //{
+        //    try
+        //    {
+        //        parentGroup.GroupPrincipal.Members.Remove(childGroup.GroupPrincipal);
+        //        parentGroup.GroupPrincipal.Save();
+        //        return true;
+        //    }
+        //    catch (Exception fout)
+        //    {
+        //        return false;
+        //    }
+        //}
         public bool RemoveGroupFromGroup(ADLGroup childGroup, ADLGroup parentGroup)
         {
-            // deze methode verwijdert de eerste groep (childGroupPrincipal) 
-            // als lid uit de tweede groep (parentGroupPrincipal)
             try
             {
-                parentGroup.GroupPrincipal.Members.Remove(childGroup.GroupPrincipal);
-                parentGroup.GroupPrincipal.Save();
+                string groupSid = string.Format($"<SID={ToSidString(childGroup.DirectoryEntry)}>");
+                parentGroup.DirectoryEntry.Properties["member"].Remove(groupSid);
+                parentGroup.DirectoryEntry.CommitChanges();
                 return true;
             }
             catch (Exception fout)
@@ -329,6 +393,17 @@ namespace ADLocal.Core.Services
             }
         }
         #endregion
+
+        private string ToSidString(DirectoryEntry entry)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in (byte[])entry.Properties["objectSid"].Value)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
 
     }
 }

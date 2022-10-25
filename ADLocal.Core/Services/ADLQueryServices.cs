@@ -129,8 +129,7 @@ namespace ADLocal.Core.Services
         public IEnumerable<ADLGroup> GetUserGroupMemberShip(ADLUser adlUser)
         {
             List<ADLGroup> adlGroups = new List<ADLGroup>();
-
-            DirectoryEntry de = adlUser.UserPrincipal.GetUnderlyingObject() as DirectoryEntry;
+            DirectoryEntry de = adlUser.DirectoryEntry;
             if (de.Properties.Contains("memberof"))
             {
                 foreach (var dn in de.Properties["memberof"])
@@ -196,36 +195,78 @@ namespace ADLocal.Core.Services
             }
             return groupMemberships.OrderBy(g => g.SamAccountName);
         }
+
+        //// onderstaande methode uit dienst genomen wegens VEEL TE TRAAG
+        //public IEnumerable<ADLUser> unused_GetUsersInGroup(ADLGroup adlGroup)
+        //{
+        //    // deze methode retourneert alle users
+        //    // die lid zijn van de opgegeven groep
+        //    List<ADLUser> adlUsers = new List<ADLUser>();
+        //    foreach (Principal principal in adlGroup.GroupPrincipal.GetMembers(false))
+        //    {
+        //        if (principal is UserPrincipal)
+        //        {
+        //            adlUsers.Add(new ADLUser(principal.SamAccountName));
+        //        }
+        //    }
+        //    return adlUsers.OrderBy(u => u.SamAccountName);
+        //}
         public IEnumerable<ADLUser> GetUsersInGroup(ADLGroup adlGroup)
         {
-            // deze methode retourneert alle users
-            // die lid zijn van de opgegeven groep
             List<ADLUser> adlUsers = new List<ADLUser>();
-            foreach (Principal principal in adlGroup.GroupPrincipal.GetMembers(false))
+            DirectoryEntry directoryEntry = adlGroup.DirectoryEntry;
+            if (directoryEntry.Properties.Contains("member"))
             {
-                if (principal is UserPrincipal)
+                foreach (string path in directoryEntry.Properties["member"])
                 {
-                    adlUsers.Add(new ADLUser(principal.SamAccountName));
+                    string username = path.Split(',')[0];
+                    username = Regex.Replace(username, "CN=", "", RegexOptions.IgnoreCase);
+                    try
+                    {
+                        adlUsers.Add(new ADLUser(username));
+                    }
+                    catch
+                    { }
                 }
             }
-            return adlUsers.OrderBy(u => u.SamAccountName);
-
+            return adlUsers.OrderBy(g => g.SamAccountName);
         }
+
+        //// onderstaande methode uit dienst genomen wegens VEEL TE TRAAG
+        //public IEnumerable<ADLGroup> unused_GetGroupsInGroup(ADLGroup adlGroup)
+        //{
+        //    // deze methode retourneert alle groepen
+        //    // die lid zijn van de opgegeven groep
+        //    List<ADLGroup> aDLGroups = new List<ADLGroup>();
+        //    foreach (Principal principal in adlGroup.GroupPrincipal.GetMembers())
+        //    {
+        //        if (principal is GroupPrincipal)
+        //        {
+        //            aDLGroups.Add(new ADLGroup(principal.SamAccountName));
+        //        }
+        //    }
+        //    return aDLGroups.OrderBy(g => g.SamAccountName);
+        //}
         public IEnumerable<ADLGroup> GetGroupsInGroup(ADLGroup adlGroup)
         {
-            // deze methode retourneert alle groepen
-            // die lid zijn van de opgegeven groep
-            List<ADLGroup> aDLGroups = new List<ADLGroup>();
-            foreach (Principal principal in adlGroup.GroupPrincipal.GetMembers())
+            List<ADLGroup> adlGroups = new List<ADLGroup>();
+            DirectoryEntry directoryEntry = adlGroup.DirectoryEntry;
+            if (directoryEntry.Properties.Contains("member"))
             {
-                if (principal is GroupPrincipal)
+                foreach (string path in directoryEntry.Properties["member"])
                 {
-                    aDLGroups.Add(new ADLGroup(principal.SamAccountName));
+                    string groupname = path.Split(',')[0];
+                    groupname = Regex.Replace(groupname, "CN=", "", RegexOptions.IgnoreCase);
+                    try
+                    {
+                        adlGroups.Add(new ADLGroup(groupname));
+                    }
+                    catch
+                    { }
                 }
             }
-            return aDLGroups.OrderBy(g => g.SamAccountName);
+            return adlGroups.OrderBy(g => g.SamAccountName);
         }
-
         public int NumberOfUsersInGroup(ADLGroup adlGroup)
         {
             List<Principal> allMembers = adlGroup.GroupPrincipal.GetMembers(false).ToList();

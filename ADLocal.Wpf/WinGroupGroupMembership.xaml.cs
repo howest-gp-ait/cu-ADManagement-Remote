@@ -132,21 +132,42 @@ namespace ADLocal.Wpf
         }
         private void PopulateGroupsNotInGroups()
         {
+            groupsNotInActiveGroup = allGroups.OrderBy(g => g.SamAccountName).ToList();
+
             if (activeAdlGroup.GroupPrincipal is null)
             {
-                groupsNotInActiveGroup = allGroups;
+                return;
             }
             else
             {
-                foreach (ADLGroup adlGroup in allGroups)
+                foreach(ADLGroup adlGroup in groupsInActiveGroup)
                 {
-                    if (!adlGroup.GroupPrincipal.IsMemberOf(activeAdlGroup.GroupPrincipal))
+                    string searchSamAccountName = adlGroup.SamAccountName;
+                    List<int> indexesToDelete = new List<int>();
+                    int index = 0;
+                    foreach(ADLGroup adlSearchGroup in groupsNotInActiveGroup)
                     {
-                        groupsNotInActiveGroup.Add(adlGroup);
+                        if(adlSearchGroup.SamAccountName == searchSamAccountName)
+                        {
+                            indexesToDelete.Add(index);
+                        }
+                        index++;
                     }
+                    for(int i = indexesToDelete.Count -1; i >= 0; i--)
+                    {
+                        groupsNotInActiveGroup.RemoveAt(indexesToDelete[i]);
+                    }
+
                 }
+
+                //foreach (ADLGroup adlGroup in allGroups)
+                //{
+                //    if (!adlGroup.GroupPrincipal.IsMemberOf(activeAdlGroup.GroupPrincipal))
+                //    {
+                //        groupsNotInActiveGroup.Add(adlGroup);
+                //    }
+                //}
             }
-            groupsNotInActiveGroup = groupsNotInActiveGroup.OrderBy(g => g.SamAccountName).ToList();
         }
         private void DisplayPopulations()
         {
